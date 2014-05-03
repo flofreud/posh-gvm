@@ -231,7 +231,7 @@ function Init-Candidate-Cache() {
         throw 'Can not retrieve list of candidates'
     }
 
-    $Script:GVM_CANDIDATES = Get-Content $Script:PGVM_CANDIDATES_PATH | Split-String ','
+    $Script:GVM_CANDIDATES = (Get-Content $Script:PGVM_CANDIDATES_PATH).Split(',')
     Write-Verbose "Available candidates: $Script:GVM_CANDIDATES"
 }
 
