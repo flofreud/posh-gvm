@@ -276,7 +276,7 @@ function Write-Version-List($Candidate) {
 
     $current = Get-Current-Candidate-Version $Candidate
     $versions = (Get-Installed-Candidate-Version-List $Candidate) -join ','
-    Invoke-API-Call "candidates/$Candidate/list?current=$current&installed=$versions" | Write-Output 
+    Invoke-API-Call "candidates/$Candidate/list?platform=posh&current=$current&installed=$versions" | Write-Output 
 }
 
 function Install-Local-Version($Candidate, $Version, $LocalPath) {
@@ -304,7 +304,7 @@ function Install-Remote-Version($Candidate, $Version) {
     } else {
 		Check-Online-Mode
         Write-Output "`nDownloading: $Candidate $Version`n"
-        Download-File "$Script:PGVM_SERVICE/download/$Candidate/$Version" $archive
+        Download-File "$Script:PGVM_SERVICE/download/$Candidate/$Version?platform=posh" $archive
     }
 
     Write-Output "Installing: $Candidate $Version"

@@ -761,7 +761,7 @@ Describe 'Write-Version-List' {
         Mock Write-Output
         Mock Get-Current-Candidate-Version { '1.1.1' } -parameterFilter { $Candidate -eq 'grails' }
         Mock Get-Installed-Candidate-Version-List { return '1.1.1','2.2.2','2.3.0' } -parameterFilter { $Candidate -eq 'grails' }
-        Mock Invoke-API-Call { 'bla' } -parameterFilter { $Path -eq 'candidates/grails/list?current=1.1.1&installed=1.1.1,2.2.2,2.3.0' }
+        Mock Invoke-API-Call { 'bla' } -parameterFilter { $Path -eq 'candidates/grails/list?platform=posh&current=1.1.1&installed=1.1.1,2.2.2,2.3.0' }
 
         Write-Version-List grails
 
