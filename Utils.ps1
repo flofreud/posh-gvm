@@ -304,7 +304,7 @@ function Install-Remote-Version($Candidate, $Version) {
     } else {
 		Check-Online-Mode
         Write-Output "`nDownloading: $Candidate $Version`n"
-        Download-File "$Script:PGVM_SERVICE/download/$Candidate/$Version?platform=posh" $archive
+        Download-File "$Script:PGVM_SERVICE/download/$Candidate/$Version`?platform=posh" $archive
     }
 
     Write-Output "Installing: $Candidate $Version"
@@ -332,6 +332,7 @@ function Download-File($Url, $TargetFile) {
 	<#
 		Adepted from http://blogs.msdn.com/b/jasonn/archive/2008/06/13/downloading-files-from-the-internet-in-powershell-with-progress.aspx
 	#>
+    Write-Verbose "Try to download $Url with HttpWebRequest"
 	$uri = New-Object "System.Uri" $Url
     $request = [System.Net.HttpWebRequest]::Create($uri) 
     $request.set_Timeout(15000)
