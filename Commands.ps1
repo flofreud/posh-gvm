@@ -1,5 +1,7 @@
 ﻿function gvm([string]$Command, [string]$Candidate, [string]$Version, [string]$InstallPath, [switch]$Verbose, [switch]$Force) {
-    if ($Verbose) { $VerbosePreference = 'Continue' }
+    $ErrorActionPreference = 'Stop'
+	$ProgressPreference = 'SilentlyContinue'	
+	if ($Verbose) { $VerbosePreference = 'Continue' }
 
     if ( !( Test-Path $Global:PGVM_DIR ) ) {
         Write-Warning "$Global:PGVM_DIR does not exists. Reinitialize posh-gvm"

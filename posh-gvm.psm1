@@ -1,21 +1,19 @@
 ﻿<#
 posh-gvm / POwerSHell Groovy enVironment Manager
 
-Equal to GVM:
-- command interface
-- use same API to get binaries
-
-Different to GVM:
-- different directory ~\.posh-gvm instead of ~\.gvm
-- command extension are not supported
+https://github.com/flofreud/posh-gvm
 
 Needed:
 - Powershell 3.0 (For Windows 7 install Windows Management Framework 3.0)
 #>
 
 #region Config
-$Global:PGVM_DIR = "$env:USERPROFILE\.posh_gvm"
-$Global:PGVM_AUTO_ANSWER = $false
+if ( !(Test-Path Variable:Global:PGVM_DIR) ) {
+	$Global:PGVM_DIR = "$env:USERPROFILE\.posh_gvm"
+}
+if ( !(Test-Path Variable:Global:PGVM_AUTO_ANSWER) ) {
+	$Global:PGVM_AUTO_ANSWER = $false
+}
 $Global:PGVM_AUTO_SELFUPDATE = $true
 
 $Script:PGVM_INIT = $false
@@ -32,8 +30,6 @@ $Script:GVM_AVAILABLE = $true
 $Script:GVM_ONLINE = $true
 $Script:GVM_FORCE_OFFLINE = $false
 $Script:GVM_CANDIDATES = $null
-
-$ErrorActionPreference = "Stop"
 #endregion
 
 Push-Location $psScriptRoot
