@@ -22,7 +22,7 @@ Requirements:
 - Powershell 3.0+ (included in Windows 8+/Windows Server 2012+, for Windows 7 install Windows Management Framework 3.0)
 
 ### With PsGet
-	1. Execute `Install-Module -ModuleUrl https://github.com/flofreud/posh-gvm/archive/master.zip`
+	1. Execute `Install-Module posh-gvm`
 	2. Execute `Import-Module posh-gvm`(best add it to your profile.ps1)
 	3. Execute `gvm help` to get started!
 	
