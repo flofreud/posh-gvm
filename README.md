@@ -66,6 +66,6 @@ A: By default, PowerShell restricts execution of all scripts. This is all about 
 
 All posh-gvm test are written for Pester. Please see its documentation: https://github.com/pester/Pester
 
-To run the tests in Powershell, load the Pester module and run in posh-gvm checkout dir:
+To run the tests in Powershell, load the Pester module and run in posh-gvm dir:
 	
 	$ Invoke-Pester
