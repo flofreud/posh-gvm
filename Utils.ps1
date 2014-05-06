@@ -355,5 +355,5 @@ function Download-File($Url, $TargetFile) {
     $targetStream.Close() 
     $targetStream.Dispose() 
     $responseStream.Dispose()
-    Write-Output '`n'
+    Write-Output ''
 }
