@@ -316,7 +316,7 @@ function Install-Remote-Version($Candidate, $Version) {
 
     # unzip downloaded archive
     $shell = New-Object -com shell.application
-    $shell.namespace($Script:PGVM_TEMP_PATH).copyhere($shell.namespace($archive).items(), 0x14)
+    $shell.namespace($Script:PGVM_TEMP_PATH).copyhere($shell.namespace($archive).items(), 0x10)
 
 	# check if unzip successfully
 	if ( !(Test-Path "$Script:PGVM_TEMP_PATH\*-$Version") ) {
