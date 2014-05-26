@@ -36,6 +36,23 @@ Requirements:
 	2. Execute `Import-Module posh-gvm`(best add it to your profile.ps1)
 	3. Execute `gvm help` to get started!
 
+## Update
+
+The autoupdate-function currently only get newly added candidates from GVM-API. To get a update of posh-gvm you have to do it manually. How to update depends on how you installed posh-gvm.
+
+There is currently now mechanism which can tell you that there is an update available.
+
+### With PsGet
+	
+	Update-Module posh-gvm
+
+### Via short Script
+	
+	(new-object Net.WebClient).DownloadString('https://raw.githubusercontent.com/flofreud/posh-gvm/master/GetPoshGvm.ps1') | iex
+
+### Classic way
+Go to the checkout location and pull the repository.
+
 ## Usage
 
 For a general overview of the feature please the [GVM Project Page](http://gvmtool.net) because posh-gvm is designed to work like the original BASH client.

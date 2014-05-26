@@ -1,6 +1,6 @@
 ﻿function gvm([string]$Command, [string]$Candidate, [string]$Version, [string]$InstallPath, [switch]$Verbose, [switch]$Force) {
     $ErrorActionPreference = 'Stop'
-	$ProgressPreference = 'SilentlyContinue'	
+	$ProgressPreference = 'SilentlyContinue'
 	if ($Verbose) { $VerbosePreference = 'Continue' }
 
     if ( !( Test-Path $Global:PGVM_DIR ) ) {
@@ -14,7 +14,7 @@
     }
 
     Init-Candidate-Cache
-    
+
     Write-Verbose "Command: $Command"
     try {
         switch -regex ($Command) {
@@ -24,7 +24,7 @@
             '^u(se)?$'        { Use-Candidate-Version $Candidate $Version }
             '^d(efault)?$'    { Set-Default-Version $Candidate $Version }
             '^c(urrent)?$'    { Show-Current-Version $Candidate }
-            '^v(ersion)?$'    { Show-Posh-Gvm-Version } 
+            '^v(ersion)?$'    { Show-Posh-Gvm-Version }
             '^b(roadcast)?$'  { Show-Broadcast-Message }
             '^h(elp)?$'       { Show-Help }
             '^offline$'       { Set-Offline-Mode $Candidate }
@@ -53,14 +53,14 @@ function Install-Candidate-Version($Candidate, $Version, $InstallPath) {
             $Version = Check-Candidate-Version-Available $Candidate $Version
         } catch {
             $localInstallation = $true
-        } 
+        }
 		if ( !($localInstallation) ) {
 			throw 'Stop! Local installation for $Candidate $Version not possible. It exists remote already.'
 		}
     } else {
         $Version = Check-Candidate-Version-Available $Candidate $Version
     }
-    
+
     if ( Is-Candidate-Version-Locally-Available $Candidate $Version ) {
         throw "Stop! $Candidate $Version is already installed."
     }
@@ -73,7 +73,7 @@ function Install-Candidate-Version($Candidate, $Version, $InstallPath) {
 
     $default = $false
     if ( !$Global:PGVM_AUTO_ANSWER ) {
-        $default = (Read-Host -Prompt "Do you want $Candidate $Version to be set as default? (Y/n): ") -match 'y'
+        $default = (Read-Host -Prompt "Do you want $Candidate $Version to be set as default? (Y/n)") -match '(y|\A\z)'
     } else {
         $default = $true
     }
@@ -184,29 +184,29 @@ function Set-Offline-Mode($Flag) {
 function Flush-Cache($DataType) {
     Write-Verbose 'Perform Flush-Cache'
     switch ($DataType) {
-        'candidates' { 
+        'candidates' {
                         if ( Test-Path $Script:PGVM_CANDIDATES_PATH ) {
                             Remove-Item $Script:PGVM_CANDIDATES_PATH
                             Write-Output 'Candidates have been flushed.'
-                        } else { 
-                            Write-Warning 'No candidate list found so not flushed.' 
-                        } 
+                        } else {
+                            Write-Warning 'No candidate list found so not flushed.'
+                        }
                      }
-        'broadcast'  {  
+        'broadcast'  {
                         if ( Test-Path $Script:PGVM_BROADCAST_PATH ) {
                             Remove-Item $Script:PGVM_BROADCAST_PATH
                             Write-Output 'Broadcast have been flushed.'
-                        } else { 
+                        } else {
                             Write-Warning 'No prior broadcast found so not flushed.'
-                        } 
+                        }
                      }
-        'version'    {  
+        'version'    {
                         if ( Test-Path $Script:PGVM_VERSION_PATH ) {
                             Remove-Item $Script:PGVM_VERSION_PATH
                             Write-Output 'Version Token have been flushed.'
-                        } else { 
+                        } else {
                             Write-Warning 'No prior Remote Version found so not flushed.'
-                        } 
+                        }
                      }
         'archives'   { Cleanup-Directory $Script:PGVM_ARCHIVES_PATH }
         'temp'       { Cleanup-Directory $Script:PGVM_TEMP_PATH }
@@ -234,7 +234,7 @@ Usage: gvm <command> <candidate> [version]
         selfupdate        [-Force]
         flush             <candidates|broadcast|archives|temp>
     candidate  :  $($Script:GVM_CANDIDATES -join ', ')
-	
+
     version    :  where optional, defaults to latest stable if not provided
 
 eg: gvm install groovy
