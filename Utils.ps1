@@ -66,7 +66,7 @@ function Check-Candidate-Present($Candidate) {
 
 function Check-Candidate-Version-Available($Candidate, $Version) {
     Check-Candidate-Present $Candidate
-    
+
     $UseDefault = $false
     if ( !($Version) ) {
         Write-Verbose 'No version provided. Fallback to default version!'
@@ -91,11 +91,11 @@ function Check-Candidate-Version-Available($Candidate, $Version) {
 
         throw "Stop! $Candidate $Version is not available in offline mode."
     }
-    
+
     if ( $UseDefault ) {
         Write-Verbose 'Try to get default version from remote'
         return Invoke-API-Call "candidates/$Candidate/default"
-    }  
+    }
 
     $VersionAvailable = Invoke-API-Call "candidates/$Candidate/$Version"
 
@@ -182,7 +182,7 @@ function Get-Online-Mode() {
 function Check-Online-Mode() {
     if ( ! (Get-Online-Mode) ) {
         throw 'This command is not available in offline mode.'
-    } 
+    }
 }
 
 function Invoke-API-Call([string]$Path, [string]$FileTarget, [switch]$IgnoreFailure) {
@@ -192,7 +192,7 @@ function Invoke-API-Call([string]$Path, [string]$FileTarget, [switch]$IgnoreFail
         if ( $FileTarget ) {
             return Invoke-RestMethod $target -OutFile $FileTarget
         }
-        
+
         return Invoke-RestMethod $target
     } catch {
         $Script:GVM_AVAILABLE = $false
@@ -263,7 +263,7 @@ function Write-Offline-Version-List($Candidate) {
         }
     } else {
         Write-Output '    None installed!'
-    } 
+    }
 
     Write-Output '------------------------------------------------------------'
 	Write-Output '* - installed                                               '
@@ -276,7 +276,7 @@ function Write-Version-List($Candidate) {
 
     $current = Get-Current-Candidate-Version $Candidate
     $versions = (Get-Installed-Candidate-Version-List $Candidate) -join ','
-    Invoke-API-Call "candidates/$Candidate/list?platform=posh&current=$current&installed=$versions" | Write-Output 
+    Invoke-API-Call "candidates/$Candidate/list?platform=posh&current=$current&installed=$versions" | Write-Output
 }
 
 function Install-Local-Version($Candidate, $Version, $LocalPath) {
@@ -293,7 +293,7 @@ function Install-Local-Version($Candidate, $Version, $LocalPath) {
 }
 
 function Install-Remote-Version($Candidate, $Version) {
-    
+
     if ( !(Test-Path $Script:PGVM_ARCHIVES_PATH) ) {
         New-Item -ItemType Directory $Script:PGVM_ARCHIVES_PATH | Out-Null
     }
@@ -315,45 +315,54 @@ function Install-Remote-Version($Candidate, $Version) {
     }
 
     # unzip downloaded archive
-    $shell = New-Object -com shell.application
-    $shell.namespace($Script:PGVM_TEMP_PATH).copyhere($shell.namespace($archive).items(), 0x10)
+    Unzip-Archive $archive $Script:PGVM_TEMP_PATH
 
 	# check if unzip successfully
 	if ( !(Test-Path "$Script:PGVM_TEMP_PATH\*-$Version") ) {
 		throw "Could not unzip the archive of $Candidate $Version. Please delete archive from $Script:PGVM_ARCHIVES_PATH (or delete all with 'gvm flush archives'"
 	}
-	
+
     # move to target location
     Move-Item "$Script:PGVM_TEMP_PATH\*-$Version" "$Global:PGVM_DIR\$Candidate\$Version"
     Write-Output "Done installing!"
 }
 
-function Download-File($Url, $TargetFile) { 
+function Unzip-Archive($Archive, $Target) {
+    if ( $Script:UNZIP_ON_PATH ) {
+        unzip.exe -oq $Archive -d $Target
+    } else {
+        # use the windows shell as general fallback (no working on Windows Server Core because there is no shell)
+        $shell = New-Object -com shell.application
+        $shell.namespace($Target).copyhere($shell.namespace($Archive).items(), 0x10)
+    }
+}
+
+function Download-File($Url, $TargetFile) {
 	<#
 		Adepted from http://blogs.msdn.com/b/jasonn/archive/2008/06/13/downloading-files-from-the-internet-in-powershell-with-progress.aspx
 	#>
     Write-Verbose "Try to download $Url with HttpWebRequest"
 	$uri = New-Object "System.Uri" $Url
-    $request = [System.Net.HttpWebRequest]::Create($uri) 
+    $request = [System.Net.HttpWebRequest]::Create($uri)
     $request.set_Timeout(15000)
     $response = $request.GetResponse()
-	$totalLength = [System.Math]::Floor($response.get_ContentLength()/1024) 
-	$responseStream = $response.GetResponseStream() 
-    $targetStream = New-Object -TypeName System.IO.FileStream -ArgumentList $targetFile, Create 
-	$buffer = new-object byte[] 10KB 
-    $count = $responseStream.Read($buffer,0,$buffer.length) 
-    $downloadedBytes = $count 
-	while ($count -gt 0) 
-    { 
-        [System.Console]::CursorLeft = 0 
-        [System.Console]::Write("Downloaded {0}K of {1}K", [System.Math]::Floor($downloadedBytes/1024), $totalLength) 
-        $targetStream.Write($buffer, 0, $count) 
-        $count = $responseStream.Read($buffer,0,$buffer.length) 
-        $downloadedBytes = $downloadedBytes + $count 
+	$totalLength = [System.Math]::Floor($response.get_ContentLength()/1024)
+	$responseStream = $response.GetResponseStream()
+    $targetStream = New-Object -TypeName System.IO.FileStream -ArgumentList $targetFile, Create
+	$buffer = new-object byte[] 10KB
+    $count = $responseStream.Read($buffer,0,$buffer.length)
+    $downloadedBytes = $count
+	while ($count -gt 0)
+    {
+        [System.Console]::CursorLeft = 0
+        [System.Console]::Write("Downloaded {0}K of {1}K", [System.Math]::Floor($downloadedBytes/1024), $totalLength)
+        $targetStream.Write($buffer, 0, $count)
+        $count = $responseStream.Read($buffer,0,$buffer.length)
+        $downloadedBytes = $downloadedBytes + $count
     }
     $targetStream.Flush()
-    $targetStream.Close() 
-    $targetStream.Dispose() 
+    $targetStream.Close()
+    $targetStream.Dispose()
     $responseStream.Dispose()
     Write-Output ''
 }

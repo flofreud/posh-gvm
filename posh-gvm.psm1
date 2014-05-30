@@ -30,6 +30,8 @@ $Script:GVM_AVAILABLE = $true
 $Script:GVM_ONLINE = $true
 $Script:GVM_FORCE_OFFLINE = $false
 $Script:GVM_CANDIDATES = $null
+
+$Script:UNZIP_ON_PATH = $false
 #endregion
 
 Push-Location $psScriptRoot
@@ -37,7 +39,7 @@ Push-Location $psScriptRoot
 . .\Commands.ps1
 . .\Init.ps1
 . .\TabExpansion.ps1
-Pop-Location 
+Pop-Location
 
 Init-Posh-Gvm
 
