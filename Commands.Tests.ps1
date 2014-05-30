@@ -183,7 +183,7 @@ Describe 'gvm' {
 
         Reset-Dispatcher-Test
     }
-    
+
     Context 'posh-gvm online and command use called' {
         Mock-Dispatcher-Test
         Mock Use-Candidate-Version -verifiable -parameterFilter { $Candidate -eq 'grails' -and $Version -eq '2.2.1' }
@@ -209,7 +209,7 @@ Describe 'gvm' {
 
         Reset-Dispatcher-Test
     }
-    
+
     Context 'posh-gvm online and command default called' {
         Mock-Dispatcher-Test
         Mock Set-Default-Version -verifiable -parameterFilter { $Candidate -eq 'grails' -and $Version -eq '2.2.1' }
@@ -248,7 +248,7 @@ Describe 'gvm' {
 
         Reset-Dispatcher-Test
     }
-    
+
     Context 'posh-gvm online and command v called' {
         Mock-Dispatcher-Test
         Mock Show-Posh-Gvm-Version -verifiable
@@ -261,7 +261,7 @@ Describe 'gvm' {
 
         Reset-Dispatcher-Test
     }
-    
+
     Context 'posh-gvm online and command version called' {
         Mock-Dispatcher-Test
         Mock Show-Posh-Gvm-Version -verifiable
@@ -274,7 +274,7 @@ Describe 'gvm' {
 
         Reset-Dispatcher-Test
     }
-    
+
     Context 'posh-gvm online and command b called' {
         Mock-Dispatcher-Test
         Mock Show-Broadcast-Message -verifiable
@@ -287,7 +287,7 @@ Describe 'gvm' {
 
         Reset-Dispatcher-Test
     }
-    
+
     Context 'posh-gvm online and command broadcast called' {
         Mock-Dispatcher-Test
         Mock Show-Broadcast-Message -verifiable
@@ -300,7 +300,7 @@ Describe 'gvm' {
 
         Reset-Dispatcher-Test
     }
-    
+
     Context 'posh-gvm online and command h called' {
         Mock-Dispatcher-Test
         Mock Show-Help -verifiable
@@ -313,7 +313,7 @@ Describe 'gvm' {
 
         Reset-Dispatcher-Test
     }
-    
+
     Context 'posh-gvm online and command help called' {
         Mock-Dispatcher-Test
         Mock Show-Help -verifiable
@@ -326,7 +326,7 @@ Describe 'gvm' {
 
         Reset-Dispatcher-Test
     }
-    
+
     Context 'posh-gvm online and command offline called' {
         Mock-Dispatcher-Test -Offline
         Mock Set-Offline-Mode -verifiable -parameterFilter { $Flag -eq 'enable' }
@@ -352,7 +352,7 @@ Describe 'gvm' {
 
         Reset-Dispatcher-Test
     }
-    
+
     Context 'posh-gvm online and command flush called' {
         Mock-Dispatcher-Test
         Mock Flush-Cache -verifiable -parameterFilter { $DataType -eq 'version'  }
@@ -399,7 +399,7 @@ Describe 'Install-Candidate-Version' {
     Context 'Local path but version is remote available already installed' {
         Mock Check-Candidate-Present -verifiable -parameterFilter { $Candidate -eq 'grails' }
         Mock Check-Candidate-Version-Available { 1.1.1 } -verifiable { $Candidate -eq 'grails' -and $Version -eq '1.1.1' }
-        
+
         It 'throw an error' {
             { Install-Candidate-Version grails 1.1.1 \bla } | Should Throw
         }
@@ -490,11 +490,11 @@ Describe 'Uninstall-Candidate-Version' {
         Mock-PGVM-Dir
         New-Item -ItemType Directory "$Global:PGVM_DIR\grails\24.3" | Out-Null
         Set-Linked-Candidate-Version grails 24.3
-        
+
         It 'finds current-junction defined' {
             Test-Path "$Global:PGVM_DIR\grails\current" | Should Be $true
         }
-        
+
         Mock Check-Candidate-Present -verifiable -parameterFilter { $Candidate -eq 'grails' }
         Mock Is-Candidate-Version-Locally-Available { $true } -verifiable -parameterFilter { $Candidate -eq 'grails' -and $Version -eq '24.3' }
         Mock Get-Current-Candidate-Version { '24.3' } -verifiable -parameterFilter { $Candidate -eq 'grails' }
@@ -520,7 +520,7 @@ Describe 'Uninstall-Candidate-Version' {
     Context 'To be uninstalled version is installed' {
         Mock-PGVM-Dir
         New-Item -ItemType Directory "$Global:PGVM_DIR\grails\24.3" | Out-Null
-        
+
         Mock Check-Candidate-Present -verifiable -parameterFilter { $Candidate -eq 'grails' }
         Mock Is-Candidate-Version-Locally-Available { $true } -verifiable -parameterFilter { $Candidate -eq 'grails' -and $Version -eq '24.3'}
         Mock Get-Current-Candidate-Version { $null } -verifiable -parameterFilter { $Candidate -eq 'grails' }
@@ -543,7 +543,7 @@ Describe 'Uninstall-Candidate-Version' {
 Describe 'List-Candidate-Versions' {
     Context 'if in online mode' {
         Mock-Online
-        Mock Check-Candidate-Present -verifiable -parameterFilter { $Candidate -eq 'grails' } 
+        Mock Check-Candidate-Present -verifiable -parameterFilter { $Candidate -eq 'grails' }
         Mock Write-Version-List -verifiable -parameterFilter { $Candidate -eq 'grails' }
 
         List-Candidate-Versions grails
@@ -555,7 +555,7 @@ Describe 'List-Candidate-Versions' {
 
     Context 'If in offline mode' {
         Mock-Offline
-        Mock Check-Candidate-Present -verifiable -parameterFilter { $Candidate -eq 'grails' } 
+        Mock Check-Candidate-Present -verifiable -parameterFilter { $Candidate -eq 'grails' }
         Mock Write-Offline-Version-List -verifiable -parameterFilter { $Candidate -eq 'grails' }
 
         List-Candidate-Versions grails
@@ -571,7 +571,7 @@ Describe 'Use-Candidate-Version' {
         Mock Check-Candidate-Version-Available { '1.1.1' } -parameterFilter { $Candidate -eq 'grails' -and $Version -eq '1.1.1' }
         Mock Get-Env-Candidate-Version { '1.1.1' } -parameterFilter { $Candidate -eq 'grails' }
         Mock Write-Output -verifiable
-        Mock Check-Candidate-Version-Locally-Available 
+        Mock Check-Candidate-Version-Locally-Available
 
         Use-Candidate-Version grails 1.1.1
 
@@ -604,7 +604,7 @@ Describe 'Set-Default-Version' {
         Mock Check-Candidate-Version-Available { '1.1.1' } -parameterFilter { $Candidate -eq 'grails' -and $Version -eq '1.1.1' }
         Mock Get-Current-Candidate-Version { '1.1.1' } -parameterFilter { $Candidate -eq 'grails' }
         Mock Write-Output -verifiable
-        Mock Check-Candidate-Version-Locally-Available 
+        Mock Check-Candidate-Version-Locally-Available
 
         Set-Default-Version grails 1.1.1
 
@@ -633,7 +633,7 @@ Describe 'Set-Default-Version' {
 }
 
 Describe 'Show-Current-Version' {
-    Context 'If called without candidate' { 
+    Context 'If called without candidate' {
         $Script:GVM_CANDIDATES = @('grails','groovy','bla')
         Mock Get-Env-Candidate-Version { '1.1.0' } -parameterFilter { $Candidate -eq 'grails' }
         Mock Get-Env-Candidate-Version { '2.1.0' } -parameterFilter { $Candidate -eq 'groovy' }
@@ -678,6 +678,7 @@ Describe 'Show-Current-Version' {
 Describe 'Show-Posh-Gvm-Version' {
     Context 'When called' {
         Mock Get-GVM-API-Version -verifiable
+        Mock Get-Posh-Gvm-Version -verifiable
         Mock Write-Output -verifiable
 
         Show-Posh-Gvm-Version
@@ -728,7 +729,7 @@ Describe 'Set-Offline-Mode' {
         $Script:GVM_ONLINE = $false
         $Script:GVM_FORCE_OFFLINE = $true
         Mock Write-Output -verifiable
-        
+
         Set-Offline-Mode disable
 
         It "deactivate offline mode" {
@@ -758,7 +759,7 @@ Describe 'Flush-Cache' {
             Assert-VerifiableMocks
         }
     }
-    
+
     Context 'Try to delete non-existing candidates cache' {
         $Script:PGVM_CANDIDATES_PATH = 'test2'
         Mock Test-Path { $false } -parameterFilter { $Path -eq 'test2' }
@@ -770,7 +771,7 @@ Describe 'Flush-Cache' {
             Assert-VerifiableMocks
         }
     }
-    
+
     Context 'Try to delete existing broadcast cache' {
         $Script:PGVM_BROADCAST_PATH = 'test'
         Mock Test-Path { $true } -parameterFilter { $Path -eq 'test' }
@@ -783,7 +784,7 @@ Describe 'Flush-Cache' {
             Assert-VerifiableMocks
         }
     }
-    
+
     Context 'Try to delete non-existing broadcast cache' {
         $Script:PGVM_BROADCAST_PATH = 'test2'
         Mock Test-Path { $false } -parameterFilter { $Path -eq 'test2' }
@@ -795,9 +796,9 @@ Describe 'Flush-Cache' {
             Assert-VerifiableMocks
         }
     }
-    
+
     Context 'Try to delete existing version cache' {
-        $Script:PGVM_VERSION_PATH = 'test'
+        $Script:GVM_API_VERSION_PATH = 'test'
         Mock Test-Path { $true } -parameterFilter { $Path -eq 'test' }
         Mock Remove-Item -verifiable -parameterFilter { $Path -eq 'test' }
         Mock Write-Output -verifiable
@@ -808,9 +809,9 @@ Describe 'Flush-Cache' {
             Assert-VerifiableMocks
         }
     }
-    
+
     Context 'Try to delete non-existing version cache' {
-        $Script:PGVM_VERSION_PATH = 'test2'
+        $Script:GVM_API_VERSION_PATH = 'test2'
         Mock Test-Path { $false } -parameterFilter { $Path -eq 'test2' }
         Mock Write-Warning -verifiable
 

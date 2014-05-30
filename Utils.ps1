@@ -22,15 +22,35 @@ EOF
 "@
 }
 
-function Get-GVM-API-Version() {
-	if ( !(Test-Path $Script:PGVM_VERSION_PATH) ) {
-		return $null
-	}
+function Get-Posh-Gvm-Version() {
     return Get-Content $Script:PGVM_VERSION_PATH
 }
 
+function Is-New-Posh-GVM-Version-Available() {
+    try {
+        $localVersion = Get-Posh-Gvm-Version
+        $currentVersion = Invoke-RestMethod $Script:PGVM_VERSION_SERVICE
+
+        return ( $currentVersion -gt $localVersion )
+    } catch {
+        return $false
+    }
+}
+
+function Get-GVM-API-Version() {
+	if ( !(Test-Path $Script:GVM_API_VERSION_PATH) ) {
+		return $null
+	}
+    return Get-Content $Script:GVM_API_VERSION_PATH
+}
+
 function Check-Available-Broadcast($Command) {
-	$liveBroadcast = Invoke-API-Call "broadcast/${Script:PGVM_VERSION}" -IgnoreFailure
+    $version = Get-GVM-API-Version
+    if ( !( $version ) ) {
+        return
+    }
+
+	$liveBroadcast = Invoke-API-Call "broadcast/$version" -IgnoreFailure
 	Write-Verbose "Online-Mode: $Script:GVM_AVAILABLE"
 
 	if ( $Script:GVM_ONLINE -and !($Script:GVM_AVAILABLE) ) {
@@ -47,11 +67,20 @@ function Check-Available-Broadcast($Command) {
 
 function Invoke-Self-Update($Force) {
     Write-Verbose 'Perform Invoke-Self-Update'
-
-    Write-Output 'The self-update feature of posh-gvm does not match gvm selfupdate.'
-    Write-Output 'Only the update of the candidate list is supported currently.'
-
+    Write-Output 'Update list of available candidates...'
     Update-Candidates-Cache
+    if ( $Force ) {
+        Invoke-Posh-Gvm-Update
+    } else {
+        if ( Is-New-Posh-GVM-Version-Available ) {
+            Invoke-Posh-Gvm-Update
+        }
+    }
+}
+
+function Invoke-Posh-Gvm-Update {
+    Write-Output 'Update posh-gvm...'
+    . "$psScriptRoot\GetPoshGvm.ps1"
 }
 
 function Check-Candidate-Present($Candidate) {
@@ -238,7 +267,7 @@ function Init-Candidate-Cache() {
 function Update-Candidates-Cache() {
     Write-Verbose 'Update candidates-cache from GVM-API'
     Check-Online-Mode
-    Invoke-Api-Call '/app/version' $Script:PGVM_VERSION_PATH
+    Invoke-Api-Call '/app/version' $Script:GVM_API_VERSION_PATH
     Invoke-API-Call '/candidates' $Script:PGVM_CANDIDATES_PATH
 }
 

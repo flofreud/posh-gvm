@@ -18,13 +18,16 @@ $Global:PGVM_AUTO_SELFUPDATE = $true
 
 $Script:PGVM_INIT = $false
 $Script:PGVM_SERVICE = 'http://api.gvmtool.net'
-$Script:PGVM_VERSION = '1.3.13'
+$Script:GVM_BASE_VERSION = '1.3.13'
 
 $Script:PGVM_CANDIDATES_PATH = "$Global:PGVM_DIR\.meta\candidates.txt"
 $Script:PGVM_BROADCAST_PATH = "$Global:PGVM_DIR\.meta\broadcast.txt"
-$Script:PGVM_VERSION_PATH = "$Global:PGVM_DIR\.meta\version.txt"
+$Script:GVM_API_VERSION_PATH = "$Global:PGVM_DIR\.meta\version.txt"
 $Script:PGVM_ARCHIVES_PATH = "$Global:PGVM_DIR\.meta\archives"
 $Script:PGVM_TEMP_PATH = "$Global:PGVM_DIR\.meta\tmp"
+
+$Script:PGVM_VERSION_PATH = "$psScriptRoot\VERSION.txt"
+$Script:PGVM_VERSION_SERVICE = "https://raw.githubusercontent.com/flofreud/posh-gvm/master/VERSION.txt"
 
 $Script:GVM_AVAILABLE = $true
 $Script:GVM_ONLINE = $true

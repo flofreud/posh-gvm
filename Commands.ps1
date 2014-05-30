@@ -163,8 +163,9 @@ function Show-Current-Version($Candidate) {
 }
 
 function Show-Posh-Gvm-Version() {
+    $poshGvmVersion = Get-Posh-Gvm-Version
     $apiVersion = Get-GVM-API-Version
-    Write-Output "posh-gvm (POwer SHell Groovy enVironment Manager) base on GVM $PGVM_VERSION and GVM API $apiVersion"
+    Write-Output "posh-gvm (POwer SHell Groovy enVironment Manager) $poshGvmVersion base on GVM $GVM_BASE_VERSION and GVM API $apiVersion"
 }
 
 function Show-Broadcast-Message() {
@@ -201,8 +202,8 @@ function Flush-Cache($DataType) {
                         }
                      }
         'version'    {
-                        if ( Test-Path $Script:PGVM_VERSION_PATH ) {
-                            Remove-Item $Script:PGVM_VERSION_PATH
+                        if ( Test-Path $Script:GVM_API_VERSION_PATH ) {
+                            Remove-Item $Script:GVM_API_VERSION_PATH
                             Write-Output 'Version Token have been flushed.'
                         } else {
                             Write-Warning 'No prior Remote Version found so not flushed.'

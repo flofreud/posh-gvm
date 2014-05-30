@@ -11,7 +11,6 @@ Please report any bugs and feature request on the [GitHub Issue Tracker](https:/
 - different directory used as default ~\.posh-gvm instead of ~\.gvm -> posh-gvm is not directly able to manage the .gvm-dir of GVM
 - command extension are not supported
 - different way to configurate data-dir and auto-anwser
-- selfupdate works only for same special cases and still need to be implemented completely 
 - not all installable candidates are useful currently in Powershell (eg the groovyserv 0.13 package is not usable because there is no client app/script in the package)
 
 ## Installation
@@ -38,19 +37,20 @@ Requirements:
 
 ## Update
 
-The autoupdate-function currently only get newly added candidates from GVM-API. To get a update of posh-gvm you have to do it manually. How to update depends on how you installed posh-gvm.
+Newer versions of posh-gvm will notify you about new versions which can be installed by `gvm selfupdate`. If `gvm version` does not show a version of posh-gvm you have to update manually.
 
-There is currently now mechanism which can tell you that there is an update available.
+### How to get a update of posh-gvm manually ?
+How to update depends on how you installed posh-gvm:
 
-### With PsGet
+#### With PsGet
 	
 	Update-Module posh-gvm
 
-### Via short Script
+#### Via short Script
 	
 	(new-object Net.WebClient).DownloadString('https://raw.githubusercontent.com/flofreud/posh-gvm/master/GetPoshGvm.ps1') | iex
 
-### Classic way
+#### Classic way
 Go to the checkout location and pull the repository.
 
 ## Usage

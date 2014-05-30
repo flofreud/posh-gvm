@@ -1,9 +1,53 @@
 ﻿. .\Utils.ps1
 . .\TestUtils.ps1
 
+Describe 'Is-New-Posh-GVM-Version-Available' {
+    Context 'New version available' {
+        $Script:PGVM_VERSION_SERVICE = 'blub'
+        $Script:PGVM_VERSION_PATH = 'TestDrive:VERSION.txt'
+        Set-Content $Script:PGVM_VERSION_PATH '1.1.1'
+
+        Mock Invoke-RestMethod { '1.2.1' } -parameterFilter { $Uri -eq 'blub' }
+
+        $result = Is-New-Posh-GVM-Version-Available
+
+        It 'returns $true' {
+            $result | Should Be $true
+        }
+    }
+
+    Context 'No new version available' {
+        $Script:PGVM_VERSION_SERVICE = 'blub'
+        $Script:PGVM_VERSION_PATH = 'TestDrive:VERSION.txt'
+        Set-Content $Script:PGVM_VERSION_PATH '1.1.1'
+
+        Mock Invoke-RestMethod { '1.1.1' } -parameterFilter { $Uri -eq 'blub' }
+
+        $result = Is-New-Posh-GVM-Version-Available
+
+        It 'returns $false' {
+            $result | Should Be $false
+        }
+    }
+
+    Context 'Version service error' {
+        $Script:PGVM_VERSION_SERVICE = 'blub'
+        $Script:PGVM_VERSION_PATH = 'TestDrive:VERSION.txt'
+        Set-Content $Script:PGVM_VERSION_PATH '1.1.1'
+
+        Mock Invoke-RestMethod { throw 'error' } -parameterFilter { $Uri -eq 'blub' }
+
+        $result = Is-New-Posh-GVM-Version-Available
+
+        It 'returns $false' {
+            $result | Should Be $false
+        }
+    }
+}
+
 Describe 'Get-GVM-API-Version' {
     Context 'No cached version' {
-        $Script:PGVM_VERSION_PATH = 'TestDrive:version.txt'
+        $Script:GVM_API_VERSION_PATH = 'TestDrive:version.txt'
 
         It 'returns `$null' {
             Get-GVM-API-Version | Should Be $null
@@ -11,8 +55,8 @@ Describe 'Get-GVM-API-Version' {
     }
 
     Context 'No cached version' {
-        $Script:PGVM_VERSION_PATH = 'TestDrive:version.txt'
-        Set-Content $Script:PGVM_VERSION_PATH '1.1.1'
+        $Script:GVM_API_VERSION_PATH = 'TestDrive:version.txt'
+        Set-Content $Script:GVM_API_VERSION_PATH '1.1.1'
 
         It 'returns $null' {
             Get-GVM-API-Version | Should Be 1.1.1
@@ -22,10 +66,10 @@ Describe 'Get-GVM-API-Version' {
 
 Describe 'Check-Available-Broadcast' {
     Context 'Last execution was online, still online' {
-        $Script:PGVM_VERSION = '1.2.3'
         $Script:GVM_ONLINE = $true
         $Script:GVM_AVAILABLE = $true
-        Mock Invoke-API-Call { 'Broadcast message' } -parameterFilter { $Path -eq 'broadcast/1.2.3' -and $IgnoreFailure } 
+        Mock Get-GVM-API-Version { '1.2.3' }
+        Mock Invoke-API-Call { 'Broadcast message' } -parameterFilter { $Path -eq 'broadcast/1.2.3' -and $IgnoreFailure }
         Mock Handle-Broadcast -verifiable -parameterFilter { $Command -eq $null -and $Broadcast -eq 'Broadcast message' }
         Mock Write-Offline-Broadcast
         Mock Write-Online-Broadcast
@@ -43,10 +87,10 @@ Describe 'Check-Available-Broadcast' {
     }
 
     Context 'Last execution was online, now offline' {
-        $Script:PGVM_VERSION = '1.2.4'
         $Script:GVM_ONLINE = $true
         $Script:GVM_AVAILABLE = $false
-        Mock Invoke-API-Call { $null } -parameterFilter { $Path -eq 'broadcast/1.2.4' -and $IgnoreFailure } 
+        Mock Get-GVM-API-Version { '1.2.4' }
+        Mock Invoke-API-Call { $null } -parameterFilter { $Path -eq 'broadcast/1.2.4' -and $IgnoreFailure }
         Mock Handle-Broadcast
         Mock Write-Offline-Broadcast
         Mock Write-Online-Broadcast
@@ -64,10 +108,10 @@ Describe 'Check-Available-Broadcast' {
     }
 
     Context 'Last execution was offline, still offline' {
-        $Script:PGVM_VERSION = '1.2.4'
         $Script:GVM_ONLINE = $false
         $Script:GVM_AVAILABLE = $false
-        Mock Invoke-API-Call { $null } -parameterFilter { $Path -eq 'broadcast/1.2.4' -and $IgnoreFailure } 
+        Mock Get-GVM-API-Version { '1.2.4' }
+        Mock Invoke-API-Call { $null } -parameterFilter { $Path -eq 'broadcast/1.2.4' -and $IgnoreFailure }
         Mock Handle-Broadcast
         Mock Write-Offline-Broadcast
         Mock Write-Online-Broadcast
@@ -85,10 +129,10 @@ Describe 'Check-Available-Broadcast' {
     }
 
     Context 'Last execution was offline, now online' {
-        $Script:PGVM_VERSION = '1.2.5'
         $Script:GVM_ONLINE = $false
         $Script:GVM_AVAILABLE = $true
-         Mock Invoke-API-Call { 'Broadcast message' } -parameterFilter { $Path -eq 'broadcast/1.2.5' -and $IgnoreFailure } 
+        Mock Get-GVM-API-Version { '1.2.5' }
+        Mock Invoke-API-Call { 'Broadcast message' } -parameterFilter { $Path -eq 'broadcast/1.2.5' -and $IgnoreFailure }
         Mock Handle-Broadcast -verifiable -parameterFilter { $Command -eq $null -and $Broadcast -eq 'Broadcast message' }
         Mock Write-Offline-Broadcast
         Mock Write-Online-Broadcast
@@ -139,7 +183,7 @@ Describe 'Check-Candidate-Version-Available select or vadidates a version for a 
     Context 'When grails version 1.1.1 is locally available' {
         Mock-Check-Candidate-Grails
         Mock-Grails-1.1.1-Locally-Available $true
-        
+
         $result = Check-Candidate-Version-Available grails 1.1.1
 
         It 'check candidate parameter' {
@@ -152,8 +196,8 @@ Describe 'Check-Candidate-Version-Available select or vadidates a version for a 
     }
 
     Context 'When gvm is offline and the provided version is not locally available' {
-        Mock-Check-Candidate-Grails 
-        Mock-Offline    
+        Mock-Check-Candidate-Grails
+        Mock-Offline
         Mock-Grails-1.1.1-Locally-Available $false
 
         It 'throws an error' {
@@ -166,7 +210,7 @@ Describe 'Check-Candidate-Version-Available select or vadidates a version for a 
     }
 
     Context 'When gvm is offline and no version is provided but there is a current version' {
-        Mock-Check-Candidate-Grails     
+        Mock-Check-Candidate-Grails
         Mock-Offline
         Mock-Current-Grails-1.2
 
@@ -182,7 +226,7 @@ Describe 'Check-Candidate-Version-Available select or vadidates a version for a 
     }
 
     Context 'When gvm is offline and no version is provided and no current version is defined' {
-        Mock-Check-Candidate-Grails      
+        Mock-Check-Candidate-Grails
         Mock-Offline
         Mock-No-Current-Grails
 
@@ -196,7 +240,7 @@ Describe 'Check-Candidate-Version-Available select or vadidates a version for a 
     }
 
     Context 'When gvm is online and no version is provided' {
-        Mock-Check-Candidate-Grails      
+        Mock-Check-Candidate-Grails
         Mock-Online
         Mock-Api-Call-Default-Grails-2.2
 
@@ -212,7 +256,7 @@ Describe 'Check-Candidate-Version-Available select or vadidates a version for a 
     }
 
     Context 'When gvm is online and the provided version is valid' {
-        Mock-Check-Candidate-Grails      
+        Mock-Check-Candidate-Grails
         Mock-Online
         Mock-Api-Call-Grails-1.1.1-Available $true
 
@@ -228,7 +272,7 @@ Describe 'Check-Candidate-Version-Available select or vadidates a version for a 
     }
 
     Context 'When gvm is online and the provided version is invalid' {
-        Mock-Check-Candidate-Grails      
+        Mock-Check-Candidate-Grails
         Mock-Online
         Mock-Api-Call-Grails-1.1.1-Available $false
 
@@ -267,11 +311,11 @@ Describe 'Get-Current-Candidate-Version reads the currently linked version' {
 }
 
 Describe 'Get-Env-Candidate-Version reads the version set in $Candidate-Home' {
-    Context 'When GRAILS_HOME is set to a specific version' { 
+    Context 'When GRAILS_HOME is set to a specific version' {
         Mock-PGVM-Dir
         New-Item -ItemType Directory "$Global:PGVM_DIR\grails\2.2.1" | Out-Null
         Mock-Grails-Home 2.2.1
-         
+
         It 'returns the set version' {
             Get-Env-Candidate-Version grails | Should Be 2.2.1
         }
@@ -280,13 +324,13 @@ Describe 'Get-Env-Candidate-Version reads the version set in $Candidate-Home' {
         Reset-PGVM-Dir
     }
 
-    Context 'When GRAILS_HOME is set to current' { 
+    Context 'When GRAILS_HOME is set to current' {
         Mock-PGVM-Dir
         New-Item -ItemType Directory "$Global:PGVM_DIR\grails\2.2.1" | Out-Null
         Set-Junction-Via-Mklink "$Global:PGVM_DIR\grails\current" "$Global:PGVM_DIR\grails\2.2.1"
 
         Mock-Grails-Home current
-         
+
         It 'returns the version linked to current' {
             Get-Env-Candidate-Version grails | Should Be 2.2.1
         }
@@ -438,7 +482,7 @@ Describe 'Get-Online-Mode check the state variables for GVM-API availablitiy and
             Get-Online-Mode | Should Be $false
         }
     }
-    
+
     Context 'GVM-Api unavailable and may not be connected' {
         $Script:GVM_AVAILABLE = $false
         $Script:GVM_FORCE_OFFLINE = $true
@@ -447,7 +491,7 @@ Describe 'Get-Online-Mode check the state variables for GVM-API availablitiy and
             Get-Online-Mode | Should Be $false
         }
     }
-    
+
     Context 'GVM-Api is available and may not be connected' {
         $Script:GVM_AVAILABLE = $true
         $Script:GVM_FORCE_OFFLINE = $true
@@ -456,7 +500,7 @@ Describe 'Get-Online-Mode check the state variables for GVM-API availablitiy and
             Get-Online-Mode | Should Be $false
         }
     }
-    
+
     Context 'GVM-Api is available and may be connected' {
         $Script:GVM_AVAILABLE = $true
         $Script:GVM_FORCE_OFFLINE = $false
@@ -533,7 +577,7 @@ Describe 'Invoke-API-Call helps doing calls to the GVM-API' {
     Context 'Successful API call with API path and FilePath' {
         $Script:PGVM_SERVICE = 'blub'
         Mock Invoke-RestMethod -verifiable -parameterFilter { $Uri -eq 'blub/na/rock' -and $OutFile -eq 'TestDrive:a.txt' }
-        
+
         Invoke-API-Call 'na/rock' TestDrive:a.txt
 
         It 'calls Invoke-RestMethod with file path' {
@@ -713,7 +757,7 @@ Describe 'Update-Candidate-Cache' {
     Context 'Checks online mode and than get version and candidates from api' {
         Mock-PGVM-Dir
 
-        $Script:PGVM_VERSION_PATH = "$Global:PGVM_DIR\version.txt"
+        $Script:GVM_API_VERSION_PATH = "$Global:PGVM_DIR\version.txt"
         $Script:PGVM_CANDIDATES_PATH = "$Global:PGVM_DIR\candidates.txt"
 
         Mock Check-Online-Mode -verifiable
@@ -783,8 +827,8 @@ Describe 'Install-Local-Version' {
     Context 'LocalPath is valid' {
         New-Item -ItemType Directory TestDrive:Snapshot | Out-Null
         Mock Write-Output
-        Mock Set-Junction-Via-Mklink -verifiable -parameterFilter { $Link -eq "$Global:PGVM_DIR\grails\snapshot" -and $Target -eq 'TestDrive:Snapshot' } 
-        
+        Mock Set-Junction-Via-Mklink -verifiable -parameterFilter { $Link -eq "$Global:PGVM_DIR\grails\snapshot" -and $Target -eq 'TestDrive:Snapshot' }
+
         Install-Local-Version grails snapshot TestDrive:Snapshot
 
         It 'creates junction for candidate version' {
@@ -796,15 +840,15 @@ Describe 'Install-Local-Version' {
 Describe 'Install-Remote-Version' {
     Context 'Install of a valid version without local archive' {
         Mock-PGVM-Dir
-        
+
         Mock Write-Output
         Mock Check-Online-Mode -verifiable
         $Script:PGVM_SERVICE = 'foobar'
         $Script:PGVM_ARCHIVES_PATH = "$Global:PGVM_DIR\archives"
         $Script:PGVM_TEMP_PATH = "$Global:PGVM_DIR\temp"
-        
+
         Mock Download-File -verifiable { Copy-Item "$PSScriptRoot\test\grails-1.3.9.zip" "$Script:PGVM_ARCHIVES_PATH\grails-1.3.9.zip" } -parameterFilter { $Url -eq 'foobar/download/grails/1.3.9?platform=posh' -and $TargetFile -eq "$Script:PGVM_ARCHIVES_PATH\grails-1.3.9.zip" }
-        
+
         Install-Remote-Version grails 1.3.9
 
         It 'downloads the archive' {
@@ -820,7 +864,7 @@ Describe 'Install-Remote-Version' {
 
     Context 'Install of a valid version with local archive' {
         Mock-PGVM-Dir
-        
+
         Mock Write-Output
         Mock Download-File
 
@@ -844,7 +888,7 @@ Describe 'Install-Remote-Version' {
 
     Context 'Install of a currupt archive' {
         Mock-PGVM-Dir
-        
+
         Mock Write-Output
         Mock Download-File
 

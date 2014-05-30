@@ -14,7 +14,7 @@ Describe 'Init-Posh-Gvm' {
         Mock Set-Env-Candidate-Version -verifiable -parameterFilter { $Candidate -eq 'bla' -and $Version -eq 'current' }
         $Script:PGVM_CANDIDATES_PATH = "$Global:PGVM_DIR\.meta\candidates.txt"
         $Script:GVM_CANDIDATES = 'grails','groovy','bla'
-        
+
         Init-Posh-Gvm
 
         It "creates .meta" {
@@ -53,8 +53,8 @@ Describe 'Init-Posh-Gvm' {
         New-Item -ItemType Directory "$Global:PGVM_DIR\.meta" | Out-Null
         New-Item -ItemType File $Script:PGVM_CANDIDATES_PATH | Out-Null
         $Script:GVM_CANDIDATES = 'grails','groovy','bla'
-        
-        Init-Posh-Gvm 
+
+        Init-Posh-Gvm
 
         It "creates .meta" {
             Test-Path "$Global:PGVM_DIR\.meta" | Should Be $true
@@ -79,7 +79,7 @@ Describe 'Init-Posh-Gvm' {
         It "does not call update-candidates-cache" {
             Assert-MockCalled Update-Candidates-Cache 0
         }
-            
+
         Reset-PGVM-Dir
     }
 }
@@ -137,51 +137,111 @@ Describe 'Check-GVM-API-Version' {
     Context 'No new version' {
         $backup_Global_PGVM_AUTO_SELFUPDTE = $Global:PGVM_AUTO_SELFUPDATE
         $Global:PGVM_AUTO_SELFUPDATE = $true
-        
+
         Mock Get-GVM-API-Version { 1.2.2 }
         Mock Invoke-API-Call { 1.2.2 } -parameterFilter { $Path -eq 'app/Version' }
         Mock Invoke-Self-Update
-        
+
         Check-GVM-API-Version
 
         It 'do nothing' {
             Assert-MockCalled Invoke-Self-Update 0
         }
-        
+
         $Global:PGVM_AUTO_SELFUPDATE = $backup_Global_PGVM_AUTO_SELFUPDTE
     }
 
     Context 'New version and no auto selfupdate' {
         $backup_Global_PGVM_AUTO_SELFUPDTE = $Global:PGVM_AUTO_SELFUPDATE
         $Global:PGVM_AUTO_SELFUPDATE = $false
-        
+
         Mock Get-GVM-API-Version { '1.2.2' }
         Mock Invoke-API-Call { '1.2.3' } -parameterFilter { $Path -eq 'app/Version' }
         Mock Write-Warning -verifiable
-        
+
         Check-GVM-API-Version
 
         It 'write a warning about needed update' {
             Assert-VerifiableMocks
         }
-        
+
         $Global:PGVM_AUTO_SELFUPDATE = $backup_Global_PGVM_AUTO_SELFUPDTE
     }
 
     Context 'New version and auto selfupdate' {
         $backup_Global_PGVM_AUTO_SELFUPDTE = $Global:PGVM_AUTO_SELFUPDATE
         $Global:PGVM_AUTO_SELFUPDATE = $true
-        
+
         Mock Get-GVM-API-Version { '1.2.2' }
         Mock Invoke-API-Call { '1.2.3' } -parameterFilter { $Path -eq 'app/Version' }
         Mock Invoke-Self-Update -verifiable
-        
+
         Check-GVM-API-Version
 
         It 'updates self' {
             Assert-VerifiableMocks
         }
-        
+
+        $Global:PGVM_AUTO_SELFUPDATE = $backup_Global_PGVM_AUTO_SELFUPDTE
+    }
+}
+
+Describe 'Check-Posh-Gvm-Version' {
+    Context 'No new Version' {
+        $backup_Global_PGVM_AUTO_SELFUPDTE = $Global:PGVM_AUTO_SELFUPDATE
+        $Global:PGVM_AUTO_SELFUPDATE = $false
+
+        Mock Is-New-Posh-GVM-Version-Available { $false }
+        Mock Write-Warning
+        Mock Invoke-Self-Update
+
+        Check-Posh-Gvm-Version
+
+        It 'does not write a warning about needed update' {
+            Assert-MockCalled Write-Warning -Times 0
+        }
+
+        It 'does not update itself' {
+            Assert-MockCalled Invoke-Self-Update -Times 0
+        }
+
+        $Global:PGVM_AUTO_SELFUPDATE = $backup_Global_PGVM_AUTO_SELFUPDTE
+    }
+
+    Context 'New version and no auto selfupdate' {
+        $backup_Global_PGVM_AUTO_SELFUPDTE = $Global:PGVM_AUTO_SELFUPDATE
+        $Global:PGVM_AUTO_SELFUPDATE = $false
+
+        Mock Is-New-Posh-GVM-Version-Available { $true }
+        Mock Write-Warning -verifiable
+        Mock Invoke-Self-Update
+
+        Check-Posh-Gvm-Version
+
+        It 'write a warning about needed update' {
+            Assert-VerifiableMocks
+        }
+
+        It 'does not update itself' {
+            Assert-MockCalled Invoke-Self-Update -Times 0
+        }
+
+        $Global:PGVM_AUTO_SELFUPDATE = $backup_Global_PGVM_AUTO_SELFUPDTE
+    }
+
+    Context 'New version and auto selfupdate' {
+        $backup_Global_PGVM_AUTO_SELFUPDTE = $Global:PGVM_AUTO_SELFUPDATE
+        $Global:PGVM_AUTO_SELFUPDATE = $true
+
+        Mock Is-New-Posh-GVM-Version-Available { $true }
+        Mock Invoke-Self-Update -verifiable
+
+        Check-Posh-Gvm-Version
+
+        It 'updates self' {
+            Assert-VerifiableMocks
+        }
+
         $Global:PGVM_AUTO_SELFUPDATE = $backup_Global_PGVM_AUTO_SELFUPDTE
     }
 }
