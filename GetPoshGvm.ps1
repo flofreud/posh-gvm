@@ -50,7 +50,7 @@ function Find-Module-Location {
     if ( $moduleDescriptor ) {
         return (Get-Item ($moduleDescriptor).Path).Directory.FullName
     } else {
-        modulePaths = @($Env:PSModulePath -split ';')
+        $modulePaths = @($Env:PSModulePath -split ';')
         # set module path to posh default
         $targetModulePath = Join-Path -Path ([Environment]::GetFolderPath('MyDocuments')) -ChildPath WindowsPowerShell\Modules
         # if its not use select the first defined
