@@ -14,7 +14,9 @@ if ( !(Test-Path Variable:Global:PGVM_DIR) ) {
 if ( !(Test-Path Variable:Global:PGVM_AUTO_ANSWER) ) {
 	$Global:PGVM_AUTO_ANSWER = $false
 }
-$Global:PGVM_AUTO_SELFUPDATE = $true
+if ( !(Test-Path Variable:Global:PGVM_AUTO_SELFUPDATE) ) {
+	$Global:PGVM_AUTO_SELFUPDATE = $false
+}
 
 $Script:PGVM_INIT = $false
 $Script:PGVM_SERVICE = 'http://api.gvmtool.net'

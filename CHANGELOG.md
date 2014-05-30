@@ -1,3 +1,5 @@
+# Version 1.1.1
+* BUGFIX: default of $Global:PGVM_AUTO_SELFUPDATE was $true but should have been $false
 
 # Version 1.1.0
 * use unzip.exe if available on path for better install performance
