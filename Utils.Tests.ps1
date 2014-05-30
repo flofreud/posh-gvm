@@ -151,14 +151,45 @@ Describe 'Check-Available-Broadcast' {
 }
 
 Describe 'Invoke-Self-Update' {
-    Context 'Selfupdate will be triggered' {
-        Mock Write-Output -verifiable -parameterFilter { $InputObject -eq 'The self-update feature of posh-gvm does not match gvm selfupdate.'}
-        Mock Write-Output -verifiable -parameterFilter { $InputObject -eq 'Only the update of the candidate list is supported currently.'}
+    Context 'Selfupdate will be triggered, no force, no new version' {
         Mock Update-Candidates-Cache -verifiable
+        Mock Write-Output -verifiable
+        Mock Is-New-Posh-GVM-Version-Available { $false }
+        Mock Invoke-Posh-Gvm-Update
 
         Invoke-Self-Update
 
         It 'updates the candidate cache' {
+            Assert-VerifiableMocks
+        }
+
+        It 'does not updates itself' {
+            Assert-MockCalled Invoke-Posh-Gvm-Update -Times 0
+        }
+    }
+
+    Context 'Selfupdate will be triggered, no force, new version' {
+        Mock Update-Candidates-Cache -verifiable
+        Mock Write-Output -verifiable
+        Mock Is-New-Posh-GVM-Version-Available { $true }
+        Mock Invoke-Posh-Gvm-Update -verifiable
+
+        Invoke-Self-Update
+
+        It 'updates the candidate cache and version' {
+            Assert-VerifiableMocks
+        }
+    }
+
+    Context 'Selfupdate will be triggered, force, no new version' {
+        Mock Update-Candidates-Cache -verifiable
+        Mock Write-Output -verifiable
+        Mock Is-New-Posh-GVM-Version-Available { $false }
+        Mock Invoke-Posh-Gvm-Update -verifiable
+
+        Invoke-Self-Update -Force $true
+
+        It 'updates the candidate cache and version' {
             Assert-VerifiableMocks
         }
     }
