@@ -1,26 +1,38 @@
 ﻿function Write-Offline-Broadcast() {
     Write-Output @"
-cat << EOF
 ==== BROADCAST =============================================
 
 OFFLINE MODE ENABLED! Some functionality is now disabled.
 
 ============================================================
-EOF
 "@
 }
 
 function Write-Online-Broadcast() {
     Write-Output @"
-cat << EOF
 ==== BROADCAST =============================================
 
 ONLINE MODE RE-ENABLED! All functionality now restored.
 
 ============================================================
-EOF
+
 "@
 }
+
+function Write-New-Version-Broadcast() {
+    if ( $Script:GVM_API_NEW_VERSION -or $Script:PGVM_NEW_VERSION ) {
+Write-Output @"
+==== UPDATE AVAILABLE ======================================
+
+A new version is available. Please consider to execute:
+
+    gvm selfupdate
+
+============================================================
+"@
+    }
+}
+
 
 function Get-Posh-Gvm-Version() {
     return Get-Content $Script:PGVM_VERSION_PATH
@@ -69,6 +81,7 @@ function Invoke-Self-Update($Force) {
     Write-Verbose 'Perform Invoke-Self-Update'
     Write-Output 'Update list of available candidates...'
     Update-Candidates-Cache
+    $Script:GVM_API_NEW_VERSION = $false
     if ( $Force ) {
         Invoke-Posh-Gvm-Update
     } else {
@@ -76,6 +89,7 @@ function Invoke-Self-Update($Force) {
             Invoke-Posh-Gvm-Update
         }
     }
+    $Script:PGVM_NEW_VERSION = $false
 }
 
 function Invoke-Posh-Gvm-Update {

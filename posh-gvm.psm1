@@ -28,6 +28,8 @@ $Script:GVM_API_VERSION_PATH = "$Global:PGVM_DIR\.meta\version.txt"
 $Script:PGVM_ARCHIVES_PATH = "$Global:PGVM_DIR\.meta\archives"
 $Script:PGVM_TEMP_PATH = "$Global:PGVM_DIR\.meta\tmp"
 
+$Script:GVM_API_NEW_VERSION = $false
+$Script:PGVM_NEW_VERSION = $false
 $Script:PGVM_VERSION_PATH = "$psScriptRoot\VERSION.txt"
 $Script:PGVM_VERSION_SERVICE = "https://raw.githubusercontent.com/flofreud/posh-gvm/master/VERSION.txt"
 

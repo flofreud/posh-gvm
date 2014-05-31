@@ -1,3 +1,6 @@
+# Version 1.1.3
+* IMPROVE: the new version messaging
+
 # Version 1.1.2
 * BUGFIX: installation routine in GetPoshGvm.ps1 broken
 

@@ -11,6 +11,10 @@
     $Script:GVM_AVAILABLE = $true
     if ( !($Script:GVM_FORCE_OFFLINE) -and $Command -ne 'offline' ) {
         Check-Available-Broadcast $Command
+
+        if ( $Script:GVM_AVAILABLE ) {
+            Write-New-Version-Broadcast
+        }
     }
 
     Init-Candidate-Cache

@@ -1,7 +1,7 @@
 ﻿. .\Utils.ps1
 
 function Mock-Check-Candidate-Grails {
-    Mock Check-Candidate-Present -verifiable -parameterFilter { $Candidate -eq 'grails' }  
+    Mock Check-Candidate-Present -verifiable -parameterFilter { $Candidate -eq 'grails' }
 }
 
 function Mock-Online {
@@ -70,6 +70,7 @@ function Mock-Dispatcher-Test([switch]$Offline) {
     $Script:GVM_FORCE_OFFLINE = $false
     if ( !($Offline) ) {
         Mock Check-Available-Broadcast -verifiable
+        Write-New-Version-Broadcast -verifiable
     }
     Mock Init-Candidate-Cache -verifiable
 }

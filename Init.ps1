@@ -48,7 +48,7 @@ function Check-JAVA-HOME() {
 
 function Check-Unzip-On-Path() {
     try {
-        Get-Command 'unzip.exe'
+        Get-Command 'unzip.exe' | Out-Null
         $Script:UNZIP_ON_PATH = $true
     } catch {
         $Script:UNZIP_ON_PATH = $false
@@ -65,7 +65,7 @@ function Check-GVM-API-Version() {
             if ( $Global:PGVM_AUTO_SELFUPDATE ) {
                 Invoke-Self-Update
             } else {
-                Write-Warning 'New GVM-API version. Please execute "gvm selfupdate" and read instructions'
+                $Script:GVM_API_NEW_VERSION = $true
             }
         }
     } catch {
@@ -79,7 +79,7 @@ function Check-Posh-Gvm-Version() {
         if ( $Global:PGVM_AUTO_SELFUPDATE ) {
             Invoke-Self-Update
         } else {
-            Write-Warning 'New posh-gvm version. Please execute "gvm selfupdate" and read instructions'
+            $Script:PGVM_NEW_VERSION = $true
         }
     }
 }
