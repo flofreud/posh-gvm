@@ -33,6 +33,34 @@ A new version is available. Please consider to execute:
     }
 }
 
+function Check-GVM-API-Version() {
+    Write-Verbose 'Checking GVM-API version'
+    try {
+        $apiVersion = Get-GVM-API-Version
+        $gvmRemoteVersion = Invoke-API-Call "app/version"
+
+        if ( $gvmRemoteVersion -gt $apiVersion) {
+            if ( $Global:PGVM_AUTO_SELFUPDATE ) {
+                Invoke-Self-Update
+            } else {
+                $Script:GVM_API_NEW_VERSION = $true
+            }
+        }
+    } catch {
+        $Script:GVM_AVAILABLE = $false
+    }
+}
+
+function Check-Posh-Gvm-Version() {
+    Write-Verbose 'Checking posh-gvm version'
+    if ( Is-New-Posh-GVM-Version-Available ) {
+        if ( $Global:PGVM_AUTO_SELFUPDATE ) {
+            Invoke-Self-Update
+        } else {
+            $Script:PGVM_NEW_VERSION = $true
+        }
+    }
+}
 
 function Get-Posh-Gvm-Version() {
     return Get-Content $Script:PGVM_VERSION_PATH

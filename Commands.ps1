@@ -13,6 +13,11 @@
         Check-Available-Broadcast $Command
 
         if ( $Script:GVM_AVAILABLE ) {
+            if ( $Script:FIRST_RUN ) {
+                Check-GVM-API-Version
+                Check-Posh-Gvm-Version
+                $Script:FIRST_RUN = $false
+            }
             Write-New-Version-Broadcast
         }
     }

@@ -37,6 +37,7 @@ $Script:GVM_AVAILABLE = $true
 $Script:GVM_ONLINE = $true
 $Script:GVM_FORCE_OFFLINE = $false
 $Script:GVM_CANDIDATES = $null
+$Script:FIRST_RUN = $true
 
 $Script:UNZIP_ON_PATH = $false
 #endregion

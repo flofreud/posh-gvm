@@ -5,7 +5,6 @@ function Init-Posh-Gvm() {
     $ErrorActionPreference = 'Stop'
     $ProgressPreference = 'SilentlyContinue'
 
-    Check-Posh-Gvm-Version
     Check-JAVA-HOME
 
     # Check if $Global:PGVM_DIR is available, if not create it
@@ -17,8 +16,6 @@ function Init-Posh-Gvm() {
     if ( ! (Test-Path $Script:PGVM_CANDIDATES_PATH) ) {
         Update-Candidates-Cache
     }
-
-    Check-GVM-API-Version
 
     Init-Candidate-Cache
 
@@ -54,34 +51,4 @@ function Check-Unzip-On-Path() {
         $Script:UNZIP_ON_PATH = $false
     }
 }
-
-function Check-GVM-API-Version() {
-    Write-Verbose 'Checking GVM-API version'
-    try {
-        $apiVersion = Get-GVM-API-Version
-        $gvmRemoteVersion = Invoke-API-Call "app/version"
-
-        if ( $gvmRemoteVersion -gt $apiVersion) {
-            if ( $Global:PGVM_AUTO_SELFUPDATE ) {
-                Invoke-Self-Update
-            } else {
-                $Script:GVM_API_NEW_VERSION = $true
-            }
-        }
-    } catch {
-        $Script:GVM_AVAILABLE = $false
-    }
-}
-
-function Check-Posh-Gvm-Version() {
-    Write-Verbose 'Checking posh-gvm version'
-    if ( Is-New-Posh-GVM-Version-Available ) {
-        if ( $Global:PGVM_AUTO_SELFUPDATE ) {
-            Invoke-Self-Update
-        } else {
-            $Script:PGVM_NEW_VERSION = $true
-        }
-    }
-}
-
 #endregion
