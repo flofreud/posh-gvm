@@ -108,7 +108,9 @@ function Check-Available-Broadcast($Command) {
 
 function Invoke-Broadcast-API-Call {
     try {
-        return Invoke-RestMethod "PGVM_BROADCAST_PATH/broadcast/latest"
+        $target = "$Script:PGVM_BROADCAST_SERVICE/broadcast/latest"
+        Write-Verbose "Broadcast API call to: $target"
+        return Invoke-RestMethod $target
     } catch {
         $Script:GVM_AVAILABLE = $false
         return $null

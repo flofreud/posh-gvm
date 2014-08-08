@@ -1,3 +1,6 @@
+### Version 1.2.1
+* BUGFIX: fixed wrong url construction for broadcast api
+
 ### Version 1.2.0
 * IMPROVE: update to the new broadcast api for GVM
 
