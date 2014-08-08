@@ -322,8 +322,8 @@ function Init-Candidate-Cache() {
 function Update-Candidates-Cache() {
     Write-Verbose 'Update candidates-cache from GVM-API'
     Check-Online-Mode
-    Invoke-Api-Call '/app/version' $Script:GVM_API_VERSION_PATH
-    Invoke-API-Call '/candidates' $Script:PGVM_CANDIDATES_PATH
+    Invoke-Api-Call 'app/version' $Script:GVM_API_VERSION_PATH
+    Invoke-API-Call 'candidates' $Script:PGVM_CANDIDATES_PATH
 }
 
 function Write-Offline-Version-List($Candidate) {
