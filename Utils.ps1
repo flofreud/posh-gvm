@@ -1,20 +1,20 @@
 ﻿function Write-Offline-Broadcast() {
     Write-Output @"
-==== BROADCAST =============================================
+==== BROADCAST =================================================================
 
 OFFLINE MODE ENABLED! Some functionality is now disabled.
 
-============================================================
+================================================================================
 "@
 }
 
 function Write-Online-Broadcast() {
     Write-Output @"
-==== BROADCAST =============================================
+==== BROADCAST =================================================================
 
 ONLINE MODE RE-ENABLED! All functionality now restored.
 
-============================================================
+================================================================================
 
 "@
 }
@@ -22,13 +22,13 @@ ONLINE MODE RE-ENABLED! All functionality now restored.
 function Write-New-Version-Broadcast() {
     if ( $Script:GVM_API_NEW_VERSION -or $Script:PGVM_NEW_VERSION ) {
 Write-Output @"
-==== UPDATE AVAILABLE ======================================
+==== UPDATE AVAILABLE ==========================================================
 
 A new version is available. Please consider to execute:
 
     gvm selfupdate
 
-============================================================
+================================================================================
 "@
     }
 }
@@ -112,6 +112,7 @@ function Invoke-Broadcast-API-Call {
         Write-Verbose "Broadcast API call to: $target"
         return Invoke-RestMethod $target
     } catch {
+        Write-Verbose "Could not reached broadcast API"
         $Script:GVM_AVAILABLE = $false
         return $null
     }
