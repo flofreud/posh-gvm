@@ -218,7 +218,7 @@ Describe 'Check-Available-Broadcast' {
         $Script:GVM_ONLINE = $true
         $Script:GVM_AVAILABLE = $true
         Mock Get-GVM-API-Version { '1.2.3' }
-        Mock Invoke-API-Call { 'Broadcast message' } -parameterFilter { $Path -eq 'broadcast/1.2.3' -and $IgnoreFailure }
+        Mock Invoke-Broadcast-API-Call { 'Broadcast message' }
         Mock Handle-Broadcast -verifiable -parameterFilter { $Command -eq $null -and $Broadcast -eq 'Broadcast message' }
         Mock Write-Offline-Broadcast
         Mock Write-Online-Broadcast
@@ -239,7 +239,7 @@ Describe 'Check-Available-Broadcast' {
         $Script:GVM_ONLINE = $true
         $Script:GVM_AVAILABLE = $false
         Mock Get-GVM-API-Version { '1.2.4' }
-        Mock Invoke-API-Call { $null } -parameterFilter { $Path -eq 'broadcast/1.2.4' -and $IgnoreFailure }
+        Mock Invoke-Broadcast-API-Call { $null }
         Mock Handle-Broadcast
         Mock Write-Offline-Broadcast
         Mock Write-Online-Broadcast
@@ -260,7 +260,7 @@ Describe 'Check-Available-Broadcast' {
         $Script:GVM_ONLINE = $false
         $Script:GVM_AVAILABLE = $false
         Mock Get-GVM-API-Version { '1.2.4' }
-        Mock Invoke-API-Call { $null } -parameterFilter { $Path -eq 'broadcast/1.2.4' -and $IgnoreFailure }
+        Mock Invoke-Broadcast-API-Call { $null }
         Mock Handle-Broadcast
         Mock Write-Offline-Broadcast
         Mock Write-Online-Broadcast
@@ -281,7 +281,7 @@ Describe 'Check-Available-Broadcast' {
         $Script:GVM_ONLINE = $false
         $Script:GVM_AVAILABLE = $true
         Mock Get-GVM-API-Version { '1.2.5' }
-        Mock Invoke-API-Call { 'Broadcast message' } -parameterFilter { $Path -eq 'broadcast/1.2.5' -and $IgnoreFailure }
+        Mock Invoke-Broadcast-API-Call { 'Broadcast message' }
         Mock Handle-Broadcast -verifiable -parameterFilter { $Command -eq $null -and $Broadcast -eq 'Broadcast message' }
         Mock Write-Offline-Broadcast
         Mock Write-Online-Broadcast

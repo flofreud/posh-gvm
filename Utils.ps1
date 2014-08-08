@@ -90,7 +90,8 @@ function Check-Available-Broadcast($Command) {
         return
     }
 
-	$liveBroadcast = Invoke-API-Call "broadcast/$version" -IgnoreFailure
+    $liveBroadcast = Invoke-Broadcast-API-Call
+
 	Write-Verbose "Online-Mode: $Script:GVM_AVAILABLE"
 
 	if ( $Script:GVM_ONLINE -and !($Script:GVM_AVAILABLE) ) {
@@ -103,6 +104,15 @@ function Check-Available-Broadcast($Command) {
 	if ( $liveBroadcast ) {
 		Handle-Broadcast $Command $liveBroadcast
 	}
+}
+
+function Invoke-Broadcast-API-Call {
+    try {
+        return Invoke-RestMethod "PGVM_BROADCAST_PATH/broadcast/latest"
+    } catch {
+        $Script:GVM_AVAILABLE = $false
+        return $null
+    }
 }
 
 function Invoke-Self-Update($Force) {

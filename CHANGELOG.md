@@ -1,3 +1,6 @@
+### Version 1.2.0
+* IMPROVE: update to the new broadcast api for GVM
+
 ### Version 1.1.4
 * IMPROVE: version check requests where executed on module import and took some time, these checks will now be executed on first gvm-call
 
