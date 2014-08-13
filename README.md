@@ -21,19 +21,19 @@ Requirements:
 - Powershell 3.0+ (included in Windows 8+/Windows Server 2012+, for Windows 7 install Windows Management Framework 3.0)
 
 ### With PsGet
-	1. Execute `Install-Module posh-gvm`
-	2. Execute `Import-Module posh-gvm`(best add it to your profile.ps1)
-	3. Execute `gvm help` to get started!
+1. Execute `Install-Module posh-gvm`
+2. Execute `Import-Module posh-gvm`(best add it to your profile.ps1)
+3. Execute `gvm help` to get started!
 	
 ### Via short script
-	1. Execute `(new-object Net.WebClient).DownloadString('https://raw.githubusercontent.com/flofreud/posh-gvm/master/GetPoshGvm.ps1') | iex`
-	2. Execute `Import-Module posh-gvm`(best add it to your profile.ps1)
-	3. Execute `gvm help` to get started!
+1. Execute `(new-object Net.WebClient).DownloadString('https://raw.githubusercontent.com/flofreud/posh-gvm/master/GetPoshGvm.ps1') | iex`
+2. Execute `Import-Module posh-gvm`(best add it to your profile.ps1)
+3. Execute `gvm help` to get started!
 
 ### Classic way
-	1. Checkout this repository to your Powershell module-directory.
-	2. Execute `Import-Module posh-gvm`(best add it to your profile.ps1)
-	3. Execute `gvm help` to get started!
+1. Checkout this repository to your Powershell module-directory.
+2. Execute `Import-Module posh-gvm`(best add it to your profile.ps1)
+3. Execute `gvm help` to get started!
 
 ## Update
 
