@@ -345,7 +345,7 @@ Describe 'Invoke-Self-Update' {
 }
 
 Describe 'Check-Candidate-Present checks if candidate parameter is valid' {
-	It 'throws anerror if no candidate is provided' {
+	It 'throws an error if no candidate is provided' {
 		{ Check-Candidate-Present } | Should Throw
 	}
 
@@ -356,6 +356,16 @@ Describe 'Check-Candidate-Present checks if candidate parameter is valid' {
 
     It 'throws no error if candidate known' {
         { Check-Candidate-Present groovy } | Should Not Throw
+    }
+}
+
+Describe 'Check-Version-Present checks if version parameter is defined' {
+    It 'throws an error if no candidate is provided' {
+        { Check-Version-Present } | Should Throw
+    }
+
+    It 'throws no error if version provided' {
+        { Check-Version-Present 2.1.3 } | Should Not Throw
     }
 }
 

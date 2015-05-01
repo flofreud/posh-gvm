@@ -1,3 +1,7 @@
+### Version 1.2.2
+* BUGFIX: explicitly handle a missing version definition for uninstall
+* BUGFIX: added -Force for Remove-Item in the uninstall process
+
 ### Version 1.2.1
 * BUGFIX: fixed wrong url construction for broadcast api
 

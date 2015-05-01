@@ -96,6 +96,7 @@ function Install-Candidate-Version($Candidate, $Version, $InstallPath) {
 function Uninstall-Candidate-Version($Candidate, $Version) {
     Write-Verbose 'Perform Uninstall-Candidate-Version'
     Check-Candidate-Present $Candidate
+    Check-Version-Present $Version
 
     if ( !(Is-Candidate-Version-Locally-Available $Candidate $Version) ) {
         throw "$Candidate $Version is not installed."
@@ -109,7 +110,7 @@ function Uninstall-Candidate-Version($Candidate, $Version) {
     }
 
     Write-Output "Uninstalling $Candidate $Version..."
-    Remove-Item -Recurse "$Global:PGVM_DIR\$Candidate\$Version"
+    Remove-Item -Recurse -Force "$Global:PGVM_DIR\$Candidate\$Version"
 }
 
 function List-Candidate-Versions($Candidate) {

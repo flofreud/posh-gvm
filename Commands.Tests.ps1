@@ -473,6 +473,13 @@ Describe 'Install-Candidate-Version' {
 }
 
 Describe 'Uninstall-Candidate-Version' {
+    Context 'No version is provided' {
+        Mock Check-Candidate-Present -verifiable -parameterFilter { $Candidate -eq 'grails' }
+        It 'throws an error' {
+            { Uninstall-Candidate-Version grails } | Should Throw
+        }
+    }
+
     Context 'To be uninstalled version is not installed' {
         Mock Check-Candidate-Present -verifiable -parameterFilter { $Candidate -eq 'grails' }
         Mock Is-Candidate-Version-Locally-Available { $false } -parameterFilter { $Candidate -eq 'grails' -and $Version -eq '24.3' }

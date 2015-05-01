@@ -148,6 +148,12 @@ function Check-Candidate-Present($Candidate) {
     }
 }
 
+function Check-Version-Present($Version) {
+    if ( !($Version)) {
+        throw 'No version provided.'
+    }
+}
+
 function Check-Candidate-Version-Available($Candidate, $Version) {
     Check-Candidate-Present $Candidate
 
