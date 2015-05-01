@@ -941,8 +941,8 @@ Describe 'Update-Candidate-Cache' {
         $Script:PGVM_CANDIDATES_PATH = "$Global:PGVM_DIR\candidates.txt"
 
         Mock Check-Online-Mode -verifiable
-        Mock Invoke-API-Call -verifiable -parameterFilter { $Path -eq '/app/version' -and $FileTarget -eq "$Global:PGVM_DIR\version.txt" }
-        Mock Invoke-API-Call -verifiable -parameterFilter { $Path -eq '/candidates' -and $FileTarget -eq "$Global:PGVM_DIR\candidates.txt" }
+        Mock Invoke-API-Call -verifiable -parameterFilter { $Path -eq 'app/version' -and $FileTarget -eq "$Global:PGVM_DIR\version.txt" }
+        Mock Invoke-API-Call -verifiable -parameterFilter { $Path -eq 'candidates' -and $FileTarget -eq "$Global:PGVM_DIR\candidates.txt" }
 
         Update-Candidates-Cache
 
@@ -1026,8 +1026,9 @@ Describe 'Install-Remote-Version' {
         $Script:PGVM_SERVICE = 'foobar'
         $Script:PGVM_ARCHIVES_PATH = "$Global:PGVM_DIR\archives"
         $Script:PGVM_TEMP_PATH = "$Global:PGVM_DIR\temp"
+        $testFilePath = "$PSScriptRoot\test\grails-1.3.9.zip"
 
-        Mock Download-File -verifiable { Copy-Item "$PSScriptRoot\test\grails-1.3.9.zip" "$Script:PGVM_ARCHIVES_PATH\grails-1.3.9.zip" } -parameterFilter { $Url -eq 'foobar/download/grails/1.3.9?platform=posh' -and $TargetFile -eq "$Script:PGVM_ARCHIVES_PATH\grails-1.3.9.zip" }
+        Mock Download-File -verifiable { Copy-Item $testFilePath "$Script:PGVM_ARCHIVES_PATH\grails-1.3.9.zip" } -parameterFilter { $Url -eq 'foobar/download/grails/1.3.9?platform=posh' -and $TargetFile -eq "$Script:PGVM_ARCHIVES_PATH\grails-1.3.9.zip" }
 
         Install-Remote-Version grails 1.3.9
 
