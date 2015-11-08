@@ -199,15 +199,33 @@ function Check-Candidate-Version-Available($Candidate, $Version) {
 function Get-Current-Candidate-Version($Candidate) {
     $currentLink = "$Global:PGVM_DIR\$Candidate\current"
 
-    if ( Test-Path $currentLink ) {
+    $targetItem = Get-Junction-Target $currentLink
+
+    if ($targetItem) {
+        return $targetItem.Name
+    }
+
+    return $null
+}
+
+function Get-Junction-Target($linkPath) {
+    if ( Test-Path $linkPath ) {
         try {
-            return (Get-Item (Get-Item $currentLink).ReparsePoint.Target).Name
+            $linkItem = Get-Item $linkPath
+
+            if (Get-Member -InputObject $linkItem -Name "ReparsePoint") {
+                return (Get-Item $linkItem.ReparsePoint.Target)
+            }
+
+            if (Get-Member -InputObject $linkItem -Name "Target") {
+                return (Get-Item $linkItem.Target)
+            }
         } catch {
             return $null
         }
-    } else {
-        return $null
     }
+
+    return $null
 }
 
 function Get-Env-Candidate-Version($Candidate) {

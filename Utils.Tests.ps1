@@ -640,7 +640,7 @@ Describe 'Set-Junction-Via-Mklink' {
         Set-Junction-Via-Mklink "$Global:PGVM_DIR\grails\bla" "$Global:PGVM_DIR\grails\1.3.7"
 
         It 'creates a junction to the target location' {
-            (Get-Item (Get-Item "$Global:PGVM_DIR\grails\bla").ReparsePoint.Target).FullName -eq "$Global:PGVM_DIR\grails\1.3.7"
+            (Get-Junction-Target "$Global:PGVM_DIR\grails\bla").FullName -eq "$Global:PGVM_DIR\grails\1.3.7" 
         }
 
         (Get-Item "$Global:PGVM_DIR\grails\bla").Delete()
@@ -655,11 +655,38 @@ Describe 'Set-Junction-Via-Mklink' {
         Set-Junction-Via-Mklink "$Global:PGVM_DIR\grails\bla" "$Global:PGVM_DIR\grails\1.3.7"
 
         It 'creates a junction to the target location without errors' {
-            (Get-Item (Get-Item "$Global:PGVM_DIR\grails\bla").ReparsePoint.Target).FullName -eq "$Global:PGVM_DIR\grails\1.3.7"
+            (Get-Junction-Target "$Global:PGVM_DIR\grails\bla").FullName -eq "$Global:PGVM_DIR\grails\1.3.7"
         }
 
         (Get-Item "$Global:PGVM_DIR\grails\bla").Delete()
         Reset-PGVM-Dir
+    }
+}
+
+Describe 'Get-Junction-Target' {
+    Context 'Provided path is a junction' {
+      Mock-PGVM-Dir
+      New-Item -ItemType Directory "$Global:PGVM_DIR\grails\1.3.7" | Out-Null
+
+      Set-Junction-Via-Mklink "$Global:PGVM_DIR\grails\bla" "$Global:PGVM_DIR\grails\1.3.7"
+
+      It 'returns the item of the junction correctly' {
+          (Get-Junction-Target "$Global:PGVM_DIR\grails\bla").FullName -eq "$Global:PGVM_DIR\grails\1.3.7"
+      }
+
+      (Get-Item "$Global:PGVM_DIR\grails\bla").Delete()
+      Reset-PGVM-Dir
+    }
+
+    Context 'Provided path is no junction' {
+      Mock-PGVM-Dir
+      New-Item -ItemType Directory "$Global:PGVM_DIR\grails\1.3.7" | Out-Null
+
+      It 'returns correctly a null object without exception' {
+          Get-Junction-Target "$Global:PGVM_DIR\grails\1.3.7" -eq $null
+      }
+
+      Reset-PGVM-Dir
     }
 }
 
