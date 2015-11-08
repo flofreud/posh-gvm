@@ -413,7 +413,11 @@ function Install-Remote-Version($Candidate, $Version) {
 	}
 
     # move to target location
-    Move-Item "$Script:PGVM_TEMP_PATH\*-$Version" "$Global:PGVM_DIR\$Candidate\$Version"
+    # Move was replaced by copy and remove because of random access denied errors
+    # when Unzip was done by via -com shell.application
+    # Move-Item "$Script:PGVM_TEMP_PATH\*-$Version" "$Global:PGVM_DIR\$Candidate\$Version"
+    Copy-Item "$Script:PGVM_TEMP_PATH\*-$Version" "$Global:PGVM_DIR\$Candidate\$Version" -Recurse
+    Remove-Item "$Script:PGVM_TEMP_PATH\*-$Version" -Recurse -Force
     Write-Output "Done installing!"
 }
 
