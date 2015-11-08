@@ -50,5 +50,12 @@ function Check-Unzip-On-Path() {
     } catch {
         $Script:UNZIP_ON_PATH = $false
     }
+
+    try {
+        Get-Command '7z.exe' | Out-Null
+        $Script:SEVENZ_On_PATH = $true
+    } catch {
+        $Script:SEVENZ_On_PATH = $false
+    }
 }
 #endregion

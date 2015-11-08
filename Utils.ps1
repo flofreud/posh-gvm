@@ -422,7 +422,9 @@ function Install-Remote-Version($Candidate, $Version) {
 }
 
 function Unzip-Archive($Archive, $Target) {
-    if ( $Script:UNZIP_ON_PATH ) {
+    if ( $Script:SEVENZ_On_PATH ) {
+        Start-Process 7z.exe -ArgumentList "x -o`"$Target`" -y `"$Archive`"" -Wait -NoNewWindow
+    } elseif ( $Script:UNZIP_ON_PATH ) {
         unzip.exe -oq $Archive -d $Target
     } else {
         # use the windows shell as general fallback (no working on Windows Server Core because there is no shell)
