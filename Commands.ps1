@@ -25,6 +25,11 @@
     Init-Candidate-Cache
 
     Write-Verbose "Command: $Command"
+
+    if ($Command -eq '') {
+        $Command = 'help'
+    }
+
     try {
         switch -regex ($Command) {
             '^i(nstall)?$'    { Install-Candidate-Version $Candidate $Version $InstallPath }
@@ -39,10 +44,9 @@
             '^offline$'       { Set-Offline-Mode $Candidate }
             '^selfupdate$'    { Invoke-Self-Update($Force) }
             '^flush$'         { Flush-Cache $Candidate }
-            default           { Write-Warning "Invalid command: $Command"; Show-Help }
+            default           { Write-Warning "Invalid command: $Command. Check gvm help!" }
         }
     } catch {
-        Show-Help
         if ( $_.CategoryInfo.Category -eq 'OperationStopped') {
             Write-Warning $_.CategoryInfo.TargetName
         } else {
@@ -188,7 +192,7 @@ function Set-Offline-Mode($Flag) {
     switch ($Flag) {
         'enable'  { $Script:GVM_FORCE_OFFLINE = $true; Write-Output 'Forced offline mode enabled.' }
         'disable' { $Script:GVM_FORCE_OFFLINE = $false; $Script:GVM_ONLINE = $true; Write-Output 'Online mode re-enabled!' }
-        default   { throws "Stop! $Flag is not a valid offline offline mode." }
+        default   { throw "Stop! $Flag is not a valid offline offline mode." }
     }
 }
 
@@ -222,7 +226,7 @@ function Flush-Cache($DataType) {
         'archives'   { Cleanup-Directory $Script:PGVM_ARCHIVES_PATH }
         'temp'       { Cleanup-Directory $Script:PGVM_TEMP_PATH }
         'tmp'        { Cleanup-Directory $Script:PGVM_TEMP_PATH }
-        default      { throws 'Stop! Please specify what you want to flush.' }
+        default      { throw 'Stop! Please specify what you want to flush.' }
     }
 }
 

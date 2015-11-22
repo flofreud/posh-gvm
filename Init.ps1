@@ -53,9 +53,9 @@ function Check-Unzip-On-Path() {
 
     try {
         Get-Command '7z.exe' | Out-Null
-        $Script:SEVENZ_On_PATH = $true
+        $Script:SEVENZ_ON_PATH = $true
     } catch {
-        $Script:SEVENZ_On_PATH = $false
+        $Script:SEVENZ_ON_PATH = $false
     }
 }
 #endregion

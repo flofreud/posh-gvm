@@ -441,7 +441,11 @@ function Install-Remote-Version($Candidate, $Version) {
 
 function Unzip-Archive($Archive, $Target) {
     if ( $Script:SEVENZ_On_PATH ) {
-        Start-Process 7z.exe -ArgumentList "x -o`"$Target`" -y `"$Archive`"" -Wait -NoNewWindow
+        $zipProcess = Start-Process 7z.exe -ArgumentList "x -o`"$Target`" -y `"$Archive`"" -Wait -PassThru -NoNewWindow
+
+        if ($zipProcess.ExitCode -ne 0) {
+            Remove-Item $Target -Recurse -Force
+        }
     } elseif ( $Script:UNZIP_ON_PATH ) {
         unzip.exe -oq $Archive -d $Target
     } else {
@@ -468,6 +472,9 @@ function Download-File($Url, $TargetFile) {
     $downloadedBytes = $count
 	while ($count -gt 0)
     {
+        if ($totalLength -lt 0) {
+            $totalLength = [System.Math]::Floor($response.get_ContentLength()/1024)
+        }
         [System.Console]::CursorLeft = 0
         [System.Console]::Write("Downloaded {0}K of {1}K", [System.Math]::Floor($downloadedBytes/1024), $totalLength)
         $targetStream.Write($buffer, 0, $count)

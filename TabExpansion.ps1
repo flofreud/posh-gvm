@@ -1,8 +1,9 @@
 ﻿# Check if function TabExpansion already exists and backup existing version to
 # prevent breaking other TabExpansion implementations.
 # Taken from posh-git https://github.com/dahlbyk/posh-git/blob/master/GitTabExpansion.ps1#L297
+$tabExpansionBackup = 'PoshGVM_DefaultTabExpansion'
 if (Test-Path Function:\TabExpansion) {
-    Rename-Item Function:\TabExpansion TabExpansionBackup
+    Rename-Item Function:\TabExpansion $tabExpansionBackup -ErrorAction SilentlyContinue
 }
 
 function TabExpansion($line, $lastWord) {
@@ -12,7 +13,7 @@ function TabExpansion($line, $lastWord) {
         # Execute gvm tab expansion for gvm command
         '^gvm (.*)' { gvmTabExpansion($lastBlock) }
         # Fall back on existing tab expansion
-        default { if (Test-Path Function:\TabExpansionBackup) { TabExpansionBackup $line $lastWord } }
+        default { if (Test-Path Function:\$tabExpansionBackup) { & $tabExpansionBackup $line $lastWord } }
     }
 }
 
@@ -26,7 +27,7 @@ function gvmTabExpansion($lastBlock) {
 
     if ( !($arguments) ) {
         # Try to complete the command
-        return $Script:PGVM_TAB_COMMANDS | Where { $_.StartsWith($command) }
+        return $Script:PGVM_TAB_COMMANDS | Where-Object { $_.StartsWith($command) }
     }
 
     $arguments = $arguments.TrimStart()
@@ -55,7 +56,7 @@ function gvmTabExpandion-Need-Candidate($Command, $LastBlock) {
 
     if ( !($arguments) ) {
         # Try to complete the command
-        return $Script:GVM_CANDIDATES | Where { $_.StartsWith($candidate) }
+        return $Script:GVM_CANDIDATES | Where-Object { $_.StartsWith($candidate) }
     }
 
     if ( !($Script:GVM_CANDIDATES -contains $candidate) ) {
@@ -74,15 +75,15 @@ function gvmTabExpandion-Need-Candidate($Command, $LastBlock) {
 }
 
 function gvmTabExpandion-Need-Version($Candidate, $LastBlock) {
-    Get-Installed-Candidate-Version-List $Candidate | Where { $_.StartsWith($LastBlock) }
+    Get-Installed-Candidate-Version-List $Candidate | Where-Object { $_.StartsWith($LastBlock) }
 }
 
 function gvmTabExpansion-Offline($Arguments) {
-    @('enable','disable') | Where { ([string]$_).StartsWith($Arguments) }
+    @('enable','disable') | Where-Object { ([string]$_).StartsWith($Arguments) }
 }
 
 function gvmTabExpansion-Flush($Arguments) {
-    @('candidates','broadcast','archives','temp') | Where { ([string]$_).StartsWith($Arguments) }
+    @('candidates','broadcast','archives','temp') | Where-Object { ([string]$_).StartsWith($Arguments) }
 }
 
 Export-ModuleMember TabExpansion

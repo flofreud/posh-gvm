@@ -9,17 +9,12 @@ Describe 'gvm' {
         Mock Test-path { $false } -parameterFilter { $Path -eq $Global:PGVM_DIR }
         Mock Init-Posh-Gvm -verifiable
         Mock Init-Candidate-Cache -verifiable
-        Mock Write-Warning
         Mock Show-Help
         gvm
 
         It 'initalize posh-gvm' {
             Assert-VerifiableMocks
         }
-
-        It 'prints invalid command message' {
-            Assert-MockCalled Write-Warning 2
-            }
 
         It 'prints help' {
             Assert-MockCalled Show-Help 1
@@ -31,7 +26,6 @@ Describe 'gvm' {
         Mock Test-path { $true } -parameterFilter { $Path -eq $Global:PGVM_DIR }
         Mock Init-Posh-Gvm
         Mock Init-Candidate-Cache -verifiable
-        Mock Write-Warning
         Mock Show-Help
         gvm
 
@@ -43,10 +37,6 @@ Describe 'gvm' {
             Assert-MockCalled Init-Posh-Gvm 0
         }
 
-        It 'prints invalid command message' {
-            Assert-MockCalled Write-Warning 1
-        }
-
         It 'prints help' {
             Assert-MockCalled Show-Help 1
         }
@@ -56,7 +46,6 @@ Describe 'gvm' {
         Mock-PGVM-DIR
         Mock Init-Candidate-Cache -verifiable
         Mock Check-Available-Broadcast
-        Mock Write-Warning -verifiable
         Mock Show-Help -verifiable
         $Script:GVM_FORCE_OFFLINE = $true
 
