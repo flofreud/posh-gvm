@@ -19,8 +19,8 @@ if ( !(Test-Path Variable:Global:PGVM_AUTO_SELFUPDATE) ) {
 }
 
 $Script:PGVM_INIT = $false
-$Script:PGVM_SERVICE = 'http://api.gvmtool.net'
-$Script:PGVM_BROADCAST_SERVICE = 'http://cast.gvm.io'
+$Script:PGVM_SERVICE = 'http://api.sdkman.io'
+$Script:PGVM_BROADCAST_SERVICE = 'http://cast.sdkman.io'
 $Script:GVM_BASE_VERSION = '1.3.13'
 
 $Script:PGVM_CANDIDATES_PATH = "$Global:PGVM_DIR\.meta\candidates.txt"

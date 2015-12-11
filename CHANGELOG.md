@@ -1,3 +1,10 @@
+### Version 1.3.0
+* BUGFIX: update url to API endpoint
+* BUGFIX: support for symlink handling in Win10
+* IMPROVE: use 7zip for archive extraction if available on path
+* BUGFIX: walkaround for rare ACCESS_DENIED error on SDK installation
+* BUGFIX: always show correct download file sizes
+
 ### Version 1.2.2
 * BUGFIX: explicitly handle a missing version definition for uninstall
 * BUGFIX: added -Force for Remove-Item in the uninstall process
@@ -22,7 +29,7 @@
 
 ### Version 1.1.0
 * FEATURE: use unzip.exe if available on path for better install performance
-* FEATURE: self-update 
+* FEATURE: self-update
 * FEATURE: automatic check for new posh-gvm versions
 
 ### Version 1.0.0
