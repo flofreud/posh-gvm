@@ -6,7 +6,8 @@
 Describe 'gvm' {
     Context 'No posh-gvm dir available'{
         $Script:GVM_FORCE_OFFLINE = $true
-        Mock Test-path { $false } -parameterFilter { $Path -eq $Global:PGVM_DIR }
+        Mock-PGVM-Dir
+        Remove-Item $global:PGVM_DIR -Recurse
         Mock Init-Posh-Gvm -verifiable
         Mock Init-Candidate-Cache -verifiable
         Mock Show-Help
@@ -19,11 +20,13 @@ Describe 'gvm' {
         It 'prints help' {
             Assert-MockCalled Show-Help 1
         }
+
+        Reset-PGVM-Dir
     }
 
     Context 'Posh-gvm dir available'{
         $Script:GVM_FORCE_OFFLINE = $true
-        Mock Test-path { $true } -parameterFilter { $Path -eq $Global:PGVM_DIR }
+        Mock-PGVM-Dir
         Mock Init-Posh-Gvm
         Mock Init-Candidate-Cache -verifiable
         Mock Show-Help
@@ -40,6 +43,7 @@ Describe 'gvm' {
         It 'prints help' {
             Assert-MockCalled Show-Help 1
         }
+
     }
 
     Context 'posh-gvm is forced offline' {
