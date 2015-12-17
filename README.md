@@ -8,9 +8,9 @@ Posh-GVM consumes the REST-API of the offical GVM CLI and may therefore break if
 Please report any bugs and feature request on the [GitHub Issue Tracker](https://github.com/flofreud/posh-gvm/issues).
 
 ## ATTENTION - Always offline and selfupdate Issue
-Recently the used url for the API endpoint got drop so that the posh-gvm thinks there is always a connection issue. The newest available version uses the new API endpoint but due to the expected connection issue the update has to be down manually.
+Recently the used url for the API endpoint got drop so that the posh-gvm thinks there is always a connection issue. The newest available version uses the new API endpoint but due to the expected connection issue the update has to be done manually.
 
-Please update the posh-gvm client by reinstall with your favorite method. PsGet users also could use `Update-Module posh-gvm`.
+Please update the posh-gvm client using your favorite method. PsGet users also could use `Update-Module posh-gvm`.
 
 ## Differences to the BASH version
 - different directory used as default ~\.posh-gvm instead of ~\.gvm -> posh-gvm is not directly able to manage the .gvm-dir of GVM
