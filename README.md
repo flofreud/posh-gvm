@@ -77,6 +77,10 @@ Similar to the BASH client you can configure posh-gvm to automatically set new i
 
 in your profile.
 
+## Use
+Replace `sdkman` for `gvm` and you'll have access to all the commands that you see in in the (GVM Tool homepage, now called sdkman)[http://sdkman.io/usage.html]
+
+
 ## Uninstall
 If you want to remove posh-gvm you need to perform 3 steps:
 
