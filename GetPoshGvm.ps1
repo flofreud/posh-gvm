@@ -19,6 +19,7 @@ function Install-Posh-Gvm() {
 
         $client = (New-Object Net.WebClient)
         $client.Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
+	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         $client.DownloadFile($poshGvmZipUrl, $poshGvmZip)
 
         # unzip archive
