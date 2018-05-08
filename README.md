@@ -1,3 +1,5 @@
+Considering that I'm not delivering software anymore on a maschine running Windows since early 2016 I'm not using posh-gvm anymore. It seems like it's mostly still working but clearly an active maintainer would be helpful. It's so old that the orginial projects was renamed and did grow quiet a bit over the functionality provided for Powershell. If anyone wants to pick up...
+
 # posh-gvm - the POwerSHell Groovy enVironment Manager
 Posh-GVM is a clone of the [GVM CLI](https://github.com/gvmtool/gvm). In most aspects its an 1:1 copy of the BASH based version.
 
